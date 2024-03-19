@@ -1,5 +1,6 @@
 import gleam/list
 import gleam/io
+import gleam/option.{type Option, None, Some}
 
 pub type Matrix =
   List(List(String))
@@ -32,7 +33,7 @@ pub fn print_row(row: List(String), index: Int) {
     True -> {
       case list.at(row, index) {
         Ok(val) -> {
-          io.print(val)
+          io.print(val <> " ")
         }
         Error(_) -> Nil
       }
@@ -43,7 +44,11 @@ pub fn print_row(row: List(String), index: Int) {
   }
 }
 
-fn print_matrix(mtx: Matrix, index: Int) {
+pub fn format_print(mtx: Matrix, indx: Option(Int)) -> Nil {
+  let index = case indx {
+    Some(val) -> val
+    None -> 0
+  }
   case list.length(mtx) > index {
     True -> {
       case list.at(mtx, index) {
@@ -54,15 +59,11 @@ fn print_matrix(mtx: Matrix, index: Int) {
         Error(_) -> Nil
       }
       io.print("\n")
-      print_matrix(mtx, index + 1)
+      format_print(mtx, Some(index + 1))
       Nil
     }
     False -> Nil
   }
-}
-
-pub fn format_print(mtrx: Matrix) -> Nil {
-  print_matrix(mtrx, 0)
 }
 
 pub fn new(width: Int, height: Int, base: String) -> Matrix {
